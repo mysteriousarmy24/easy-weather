@@ -28,12 +28,12 @@ class DisplayWeather extends StatelessWidget {
               weather.cityName,
               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 25),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text(
               "${weather.temperature.toStringAsFixed(1)}°C",
               style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 10),
             Text(
               weather.description,
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25),

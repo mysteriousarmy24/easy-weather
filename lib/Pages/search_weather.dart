@@ -12,13 +12,43 @@ class SearchWeather extends StatefulWidget {
 }
 
 class _SearchWeatherState extends State<SearchWeather> {
- final TextEditingController _cityName = TextEditingController();
-  String cityName = "";
-  Weather? newWeather;
+  WeatherService _weatherService = WeatherService(
+    apiKey: dotenv.env['OPEN_WETHER_API_KEY'] ??  " ",
+  );
+  Weather? _weather;
+  String? error;
+  final TextEditingController _controller = TextEditingController();
+  // String cityName = "";
+  // Weather? newWeather;
   @override
   void dispose() {
-    _cityName.dispose();
+    _controller.dispose();
     super.dispose();
+  }
+
+  void _searchWeather() async{
+    final city = _controller.text.trim();
+    try {
+  if(city.isEmpty){
+    setState(() {
+      error = "Please enter a city";
+    });
+    return;
+  }
+  final newWeather = await _weatherService.getWeather(city);
+  setState(() {
+    _weather = newWeather;
+    error= null;
+  });
+}  catch (e) {
+  error = "Failed to load weather data: $city";
+  print('error in fetching weather: $e');
+  setState(() {
+    _weather = null;
+  });
+  
+}
+
   }
 
   @override
@@ -36,15 +66,20 @@ class _SearchWeatherState extends State<SearchWeather> {
             Row(
               children: [
                 Container(
-                  width: 300,
+                  width: 400,
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     //color: Colors.blueGrey[50],
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: TextField(
-                    controller: _cityName,
+                    controller: _controller,
+                    onSubmitted: (value) => _searchWeather(),
                     decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: _searchWeather,
+                        icon: Icon(Icons.search),
+                      ),
                       hintText: "Enter city name",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(100),
@@ -58,7 +93,7 @@ class _SearchWeatherState extends State<SearchWeather> {
                     ),
                   ),
                 ),
-                Container(
+                /*Container(
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
@@ -69,7 +104,9 @@ class _SearchWeatherState extends State<SearchWeather> {
                     child: IconButton(
                       onPressed: () {
                         cityName = _cityName.text;
-                        WeatherService(apiKey: dotenv.env['OPEN_WEATHER_API_KEY']!)
+                        WeatherService(
+                              apiKey: dotenv.env['OPEN_WEATHER_API_KEY']!,
+                            )
                             .getWeather(cityName)
                             .then((weather) {
                               setState(() {
@@ -83,14 +120,23 @@ class _SearchWeatherState extends State<SearchWeather> {
                       icon: Icon(Icons.search),
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
-            SizedBox(height: 20),
-            if (newWeather != null)
-             DisplayWeather(weather: newWeather!)
+            SizedBox(height: 5),
+            if (error != null)
+              Text(
+                error!,
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              )
+            else if (_weather != null)
+              DisplayWeather(weather: _weather!)
             else
-               Center(child: Text("Search City name")),
+              Center(child: Text("Search City name")),
+            // if (newWeather != null)
+            //   DisplayWeather(weather: newWeather!)
+            // else
+            //   Center(child: Text("Search City name")),
           ],
         ),
       ),

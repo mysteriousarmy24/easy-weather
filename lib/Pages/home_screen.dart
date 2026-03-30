@@ -50,34 +50,38 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _weather != null
           ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DisplayWeather(weather: _weather!),
-                Container(
-                  width: 200,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(
-                      255,
-                      226,
-                      182,
-                      24,
-                    ).withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchWeather(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Container(
+                    width: 200,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(
+                        255,
+                        226,
+                        182,
+                        24,
+                      ).withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SearchWeather(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Search for another city",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
-                      );
-                    },
-                    child: Text(
-                      "Search for another city",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
                       ),
                     ),
                   ),
