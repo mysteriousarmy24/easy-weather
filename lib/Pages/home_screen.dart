@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:easy_wheather/Pages/search_weather.dart';
 import 'package:easy_wheather/Services/weather_service.dart';
+import 'package:easy_wheather/models/weather.dart';
+import 'package:easy_wheather/widgets/display_weather.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,80 +13,78 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final WeatherService _weatherService = WeatherService();
-  Map<String, dynamic>? _weather;
-  bool _isLoading = true;
-  String? _errorMessage;
+  WeatherService _weatherService = WeatherService(
+    apiKey: dotenv.env['OPEN_WETHER_API_KEY']!,
+  );
+  Weather? _weather;
+
+  //method to fetch the weather
+  Future<void> _fetchWeather() async {
+    try {
+      Weather weather = await _weatherService.getWeatherFromLocation();
+      setState(() {
+        _weather = weather;
+      });
+      print(_weather);
+    } catch (e) {
+      print("Error fetching weather: $e");
+    }
+  }
 
   @override
   void initState() {
-    super.initState();
     _fetchWeather();
-  }
-
-  Future<void> _fetchWeather() async {
-    try {
-      final weatherData = await _weatherService.getWeatherByLocation();
-      setState(() {
-        _weather = weatherData;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
-    }
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Easy Weather'),
-        centerTitle: true,
+        title: const Text(
+          'Easy Weather',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+        ),
+        centerTitle: false,
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.light_mode))],
       ),
-      body: Center(
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : _errorMessage != null
-                ? Text(
-                    'Error: $_errorMessage',
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  )
-                : _weather != null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            _weather!['name'] ?? 'Unknown Location',
-                            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '${_weather!['main']['temp'].round()}°C',
-                            style: const TextStyle(fontSize: 48),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            _weather!['weather'][0]['main'],
-                            style: const TextStyle(fontSize: 24, color: Colors.grey),
-                          ),
-                        ],
-                      )
-                    : const Text('No weather data available'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _isLoading = true;
-            _errorMessage = null;
-          });
-          _fetchWeather();
-        },
-        child: const Icon(Icons.refresh),
-      ),
+      body: _weather != null
+          ? Column(
+              children: [
+                DisplayWeather(weather: _weather!),
+                Container(
+                  width: 200,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(
+                      255,
+                      226,
+                      182,
+                      24,
+                    ).withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchWeather(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Search for another city",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }
