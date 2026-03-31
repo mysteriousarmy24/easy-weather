@@ -10,7 +10,7 @@ class GetLocation {
     }
     //get currunt position
     Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      desiredAccuracy: LocationAccuracy.best,
     );
     print("latitude: ${position.latitude}");
     print("longitude: ${position.longitude}");

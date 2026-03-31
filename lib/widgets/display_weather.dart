@@ -1,5 +1,5 @@
 import 'package:easy_wheather/models/weather.dart';
-import 'package:easy_wheather/utilities.dart';
+import 'package:easy_wheather/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -57,6 +57,7 @@ class DisplayWeather extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
+                          color: Colors.black
                         ),
                       ),
                       Text(
@@ -73,6 +74,7 @@ class DisplayWeather extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
+                          color: Colors.black
                         ),
                       ),
                       Text(
@@ -89,6 +91,7 @@ class DisplayWeather extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
+                          color: Colors.black
                         ),
                       ),
                       Text(

@@ -12,7 +12,7 @@ class SearchWeather extends StatefulWidget {
 }
 
 class _SearchWeatherState extends State<SearchWeather> {
-  WeatherService _weatherService = WeatherService(
+  final WeatherService _weatherService = WeatherService(
     apiKey: dotenv.env['OPEN_WETHER_API_KEY'] ??  " ",
   );
   Weather? _weather;
@@ -35,9 +35,9 @@ class _SearchWeatherState extends State<SearchWeather> {
     });
     return;
   }
-  final newWeather = await _weatherService.getWeather(city);
+  _weather = await _weatherService.getWeather(city);
   setState(() {
-    _weather = newWeather;
+   // _weather = newWeather;
     error= null;
   });
 }  catch (e) {
